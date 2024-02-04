@@ -2,6 +2,10 @@
 
 "basic" mod that adds the amazing function of... Copying the level id just by clicking it :)
 
-# CREDITS
+# Notes
+
+- This mod interferes with the `Jukebox` mod, i can't do anything to fix it sadly :sob:
+
+# Credits
 
 - Thanks to atreusARG `(juako para los compas)` for the idea
