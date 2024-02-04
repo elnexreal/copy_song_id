@@ -12,6 +12,16 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
         auto songWidget = this->m_songWidget;
 
         if (!songWidget->m_isRobtopSong) {
+            // fix the more button away from the song creator or remove the button
+            for (int i = 0; i < songWidget->getChildren()->capacity(); i++) {
+                if (auto creatorLabel = typeinfo_cast<CCLabelBMFont *>(songWidget->getChildren()->objectAtIndex(i))) {
+                    if (std::string(creatorLabel->getString()).starts_with("By: ")) {
+                        creatorLabel->setPosition({-140.f, 16.f});
+                        creatorLabel->setScale(0.55f);
+                    }
+                }
+            }
+
             // hide the original label (not deleting it because game crash :sob:)
             songWidget->m_songIDLabel->setVisible(false);
 
