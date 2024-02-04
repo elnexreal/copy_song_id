@@ -8,6 +8,7 @@ With the Copy Song ID mod you just need to click the song id `it's in green colo
 ## Notes
 
 - This only works for the first song of a level `(if the level has more than one song you still need to copy the ID manually)`
+- The mod changes the UI a little bit to fit the new way of displaying the ID and the SFX's.
 
 ## Credits
 
