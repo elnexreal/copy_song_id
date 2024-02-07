@@ -5,18 +5,22 @@
 using namespace geode::prelude;
 
 struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
+    /*
+        define things for the functions (probably bad code)
+        btw "o_" means original
+    */
     CustomSongWidget *songWidget;
-    CCLabelBMFont *songIDLabel;
+    CCLabelBMFont *o_songIDLabel;
 
     bool init(GJGameLevel *p0, bool p1) {
         if (!LevelInfoLayer::init(p0, p1))
             return false;
 
         songWidget = this->m_songWidget;
-        songIDLabel = songWidget->m_songIDLabel;
+        o_songIDLabel = songWidget->m_songIDLabel;
 
         if (!songWidget->m_isRobtopSong) {
-            songIDLabel->setVisible(false);
+            o_songIDLabel->setVisible(false);
 
             auto menuLayout = AxisLayout::create(Axis::Row);
             menuLayout->setCrossAxisOverflow(false);
@@ -30,34 +34,54 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
             menu->setContentSize({600.0, 40.0});
             menu->setLayout(menuLayout);
             menu->setScale(0.35f);
+            menu->setID("btnMenu"_spr);
 
             // strings for labels
-            auto songIdStr = std::string("Song ID: ") + std::to_string(songWidget->m_customSongID);
-            auto sfxSizeStr = std::string("SFX's: " + std::to_string(songWidget->m_sfx.size()));
+            auto songIDStr = std::string("Song ID: ") + std::to_string(songWidget->m_customSongID);
+            auto sfxSizeStr = std::string("SFXs: " + std::to_string(songWidget->m_sfx.size()));
 
-            // debug thingys
-            // log::debug("{}", songIdStr);
-            // log::debug("{}", songWidget->m_songs.size());
+            // add a node that contains two labels for the songs, one for the id and the other for the extras
+            auto btnNode = CCNode::create();
+            btnNode->setAnchorPoint({0.0, 0.5});
+            btnNode->setLayout(AxisLayout::create());
+            btnNode->setID("labelNode"_spr);
 
-            // if multiple songs are in the level add the number of extra songs to the label
+            // create the label for the id
+            auto songIDLabel = CCLabelBMFont::create(songIDStr.c_str(), "bigFont.fnt");
+            songIDLabel->setColor({192, 255, 199});
+            songIDLabel->setID("songIDLabel"_spr);
+
+            // add the song ID label to the node
+            btnNode->addChild(songIDLabel);
+
+            // if multiple songs are in the level add another label to the node
             if (songWidget->m_songs.size() >= 2) {
-                songIdStr.append(" + ").append(std::to_string(songWidget->m_songs.size() - 1).append(" songs"));
+                auto songExtras = CCLabelBMFont::create(std::string("(+").append(std::to_string(songWidget->m_songs.size() - 1)).append(std::string(")")).c_str(),
+                                                        "chatFont.fnt");
+                songExtras->setScale(1.1);
+                songExtras->setID("songExtras"_spr);
+                btnNode->addChild(songExtras);
             }
 
-            // wrap the song id string to a button
-            auto idBtn = CCMenuItemSpriteExtra::create(CCLabelBMFont::create(songIdStr.c_str(), "bigFont.fnt"),
-                                                       this,
-                                                       menu_selector(CopySongID::onButtonClick));
+            btnNode->setContentSize(songIDLabel->getScaledContentSize());
+            btnNode->updateLayout();
+
+            // wrap the song id label to a button
+            auto idBtn = CCMenuItemSpriteExtra::create(
+                btnNode,
+                this,
+                menu_selector(CopySongID::onButtonClick));
             idBtn->setAnchorPoint({0.0, 0.5});
-            idBtn->setColor({192, 255, 199});
-            idBtn->m_startPosition = CCPoint(0.5, 0.5);
             idBtn->m_scaleMultiplier = 1.05;
+            idBtn->setID("songIDBtn"_spr);
             menu->addChild(idBtn);
 
             // create a sfx counter value
             if (songWidget->m_hasSFX) {
-                auto sfxLabel = CCLabelBMFont::create(sfxSizeStr.c_str(), "bigFont.fnt");
+                auto sfxLabel = CCLabelBMFont::create(sfxSizeStr.c_str(),
+                                                      "bigFont.fnt");
                 sfxLabel->setAnchorPoint({0.0, 0.5});
+                sfxLabel->setID("sfxLabel"_spr);
 
                 menu->addChild(sfxLabel);
             }
