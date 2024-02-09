@@ -79,14 +79,14 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
             m_fields->menu->addChild(idBtn);
 
             // create a sfx counter value
-            // if (m_fields->songWidget->m_hasSFX) {
-            //     auto sfxLabel = CCLabelBMFont::create(m_fields->sfxSizeStr.c_str(),
-            //                                           "bigFont.fnt");
-            //     sfxLabel->setAnchorPoint({0.0, 0.5});
-            //     sfxLabel->setID("sfxLabel"_spr);
+            if (m_fields->songWidget->m_hasSFX) {
+                auto sfxLabel = CCLabelBMFont::create(m_fields->sfxSizeStr.c_str(),
+                                                      "bigFont.fnt");
+                sfxLabel->setAnchorPoint({0.0, 0.5});
+                sfxLabel->setID("sfxLabel"_spr);
 
-            //     m_fields->menu->addChild(sfxLabel);
-            // }
+                m_fields->menu->addChild(sfxLabel);
+            }
             m_fields->menu->updateLayout();
             m_fields->songWidget->addChild(m_fields->menu);
         }
