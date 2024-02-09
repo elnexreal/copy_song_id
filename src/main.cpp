@@ -115,7 +115,7 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
         if (!m_fields->songWidget->m_isRobtopSong) {
             m_fields->sfxSizeStr = std::string("SFXs: " + std::to_string(m_fields->songWidget->m_sfx.size()));
 
-            if (m_fields->songWidget->m_songs.size() >= 1) {
+            if (m_fields->songWidget->m_sfx.size() >= 1) {
                 auto sfxLabel = CCLabelBMFont::create(m_fields->sfxSizeStr.c_str(),
                                                       "bigFont.fnt");
                 sfxLabel->setAnchorPoint({0.0, 0.5});
