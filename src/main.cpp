@@ -113,8 +113,11 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
         /* robtop doesn't return sfx count when getting the level info
         so i will check if it has sfxs when you finish the download :)*/
 
+        if (m_fields->songWidget->m_isRobtopSong)
+            return;
+
         if (m_fields->songWidget->m_hasSFX) {
-            // if the label doesn't exists (created when init() is called)
+            // if the label doesn't exist (created when init() is called)
             if (m_fields->sfxLabel == nullptr) {
                 // fetch the sfx count again
                 m_fields->sfxSizeStr = std::string("SFXs: " + std::to_string(m_fields->songWidget->m_sfx.size()));
