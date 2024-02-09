@@ -11,6 +11,8 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
     */
     CustomSongWidget *songWidget;
     CCLabelBMFont *o_songIDLabel;
+    CCMenu *menu;
+    std::string sfxSizeStr;
 
     bool init(GJGameLevel *p0, bool p1) {
         if (!LevelInfoLayer::init(p0, p1))
@@ -28,17 +30,17 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
             menuLayout->setAxisAlignment(AxisAlignment::Start);
             menuLayout->setGap(30.0);
 
-            auto menu = CCMenu::create();
-            menu->setPosition({-139.0, -32.0});
-            menu->setAnchorPoint({0.0, 0.5});
-            menu->setContentSize({600.0, 40.0});
-            menu->setLayout(menuLayout);
-            menu->setScale(0.35f);
-            menu->setID("btnMenu"_spr);
+            m_fields->menu = CCMenu::create();
+            m_fields->menu->setPosition({-139.0, -32.0});
+            m_fields->menu->setAnchorPoint({0.0, 0.5});
+            m_fields->menu->setContentSize({600.0, 40.0});
+            m_fields->menu->setLayout(menuLayout);
+            m_fields->menu->setScale(0.35f);
+            m_fields->menu->setID("btnMenu"_spr);
 
             // strings for labels
             auto songIDStr = std::string("Song ID: ") + std::to_string(m_fields->songWidget->m_customSongID);
-            auto sfxSizeStr = std::string("SFXs: " + std::to_string(m_fields->songWidget->m_sfx.size()));
+            m_fields->sfxSizeStr = std::string("SFXs: " + std::to_string(m_fields->songWidget->m_sfx.size()));
 
             // add a node that contains two labels for the songs, one for the id and the other for the extras
             auto btnNode = CCNode::create();
@@ -74,26 +76,25 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
             idBtn->setAnchorPoint({0.0, 0.5});
             idBtn->m_scaleMultiplier = 1.05;
             idBtn->setID("songIDBtn"_spr);
-            menu->addChild(idBtn);
+            m_fields->menu->addChild(idBtn);
 
             // create a sfx counter value
-            if (m_fields->songWidget->m_hasSFX) {
-                auto sfxLabel = CCLabelBMFont::create(sfxSizeStr.c_str(),
-                                                      "bigFont.fnt");
-                sfxLabel->setAnchorPoint({0.0, 0.5});
-                sfxLabel->setID("sfxLabel"_spr);
+            // if (m_fields->songWidget->m_hasSFX) {
+            //     auto sfxLabel = CCLabelBMFont::create(m_fields->sfxSizeStr.c_str(),
+            //                                           "bigFont.fnt");
+            //     sfxLabel->setAnchorPoint({0.0, 0.5});
+            //     sfxLabel->setID("sfxLabel"_spr);
 
-                menu->addChild(sfxLabel);
-            }
-            menu->updateLayout();
-            m_fields->songWidget->addChild(menu);
+            //     m_fields->menu->addChild(sfxLabel);
+            // }
+            m_fields->menu->updateLayout();
+            m_fields->songWidget->addChild(m_fields->menu);
         }
 
         return true;
     }
 
     void onButtonClick(CCObject *sender) {
-        auto songWidget = m_fields->songWidget;
         auto songID = m_fields->songWidget->m_customSongID;
 
         try {
@@ -102,6 +103,27 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
             Notification::create(std::string("ID ") + std::to_string(songID) + std::string(" successfully copied"), CCSprite::createWithSpriteFrameName("GJ_completesIcon_001.png"))->show();
         } catch (const std::exception &e) {
             Notification::create(std::string("Failed to copy ID"), CCSprite::createWithSpriteFrameName("GJ_deleteIcon_001.png"))->show();
+        }
+    }
+
+    void levelDownloadFinished(GJGameLevel *level) {
+        LevelInfoLayer::levelDownloadFinished(level);
+
+        /* robtop doesn't return sfx count when downloading the level
+        so i will check if it has sfxs when you finish the download :)*/
+
+        if (!m_fields->songWidget->m_isRobtopSong) {
+            m_fields->sfxSizeStr = std::string("SFXs: " + std::to_string(m_fields->songWidget->m_sfx.size()));
+
+            if (m_fields->songWidget->m_songs.size() >= 1) {
+                auto sfxLabel = CCLabelBMFont::create(m_fields->sfxSizeStr.c_str(),
+                                                      "bigFont.fnt");
+                sfxLabel->setAnchorPoint({0.0, 0.5});
+                sfxLabel->setID("sfxLabel"_spr);
+
+                m_fields->menu->addChild(sfxLabel);
+                m_fields->menu->updateLayout();
+            }
         }
     }
 };
