@@ -6,7 +6,7 @@ using namespace geode::prelude;
 
 struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
     /*
-        define things for the functions (probably bad code)
+        references to fields
         btw "o_" means original
     */
     CustomSongWidget *songWidget;
@@ -16,11 +16,11 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
         if (!LevelInfoLayer::init(p0, p1))
             return false;
 
-        songWidget = this->m_songWidget;
-        o_songIDLabel = songWidget->m_songIDLabel;
+        m_fields->songWidget = this->m_songWidget;
+        m_fields->o_songIDLabel = m_fields->songWidget->m_songIDLabel;
 
-        if (!songWidget->m_isRobtopSong) {
-            o_songIDLabel->setVisible(false);
+        if (!m_fields->songWidget->m_isRobtopSong) {
+            m_fields->o_songIDLabel->setVisible(false);
 
             auto menuLayout = AxisLayout::create(Axis::Row);
             menuLayout->setCrossAxisOverflow(false);
@@ -37,8 +37,8 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
             menu->setID("btnMenu"_spr);
 
             // strings for labels
-            auto songIDStr = std::string("Song ID: ") + std::to_string(songWidget->m_customSongID);
-            auto sfxSizeStr = std::string("SFXs: " + std::to_string(songWidget->m_sfx.size()));
+            auto songIDStr = std::string("Song ID: ") + std::to_string(m_fields->songWidget->m_customSongID);
+            auto sfxSizeStr = std::string("SFXs: " + std::to_string(m_fields->songWidget->m_sfx.size()));
 
             // add a node that contains two labels for the songs, one for the id and the other for the extras
             auto btnNode = CCNode::create();
@@ -55,8 +55,8 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
             btnNode->addChild(songIDLabel);
 
             // if multiple songs are in the level add another label to the node
-            if (songWidget->m_songs.size() >= 2) {
-                auto songExtras = CCLabelBMFont::create(std::string("(+").append(std::to_string(songWidget->m_songs.size() - 1)).append(std::string(")")).c_str(),
+            if (m_fields->songWidget->m_songs.size() >= 2) {
+                auto songExtras = CCLabelBMFont::create(std::string("(+").append(std::to_string(m_fields->songWidget->m_songs.size() - 1)).append(std::string(")")).c_str(),
                                                         "chatFont.fnt");
                 songExtras->setScale(1.1);
                 songExtras->setID("songExtras"_spr);
@@ -77,7 +77,7 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
             menu->addChild(idBtn);
 
             // create a sfx counter value
-            if (songWidget->m_hasSFX) {
+            if (m_fields->songWidget->m_hasSFX) {
                 auto sfxLabel = CCLabelBMFont::create(sfxSizeStr.c_str(),
                                                       "bigFont.fnt");
                 sfxLabel->setAnchorPoint({0.0, 0.5});
@@ -86,19 +86,20 @@ struct CopySongID : Modify<CopySongID, LevelInfoLayer> {
                 menu->addChild(sfxLabel);
             }
             menu->updateLayout();
-            songWidget->addChild(menu);
+            m_fields->songWidget->addChild(menu);
         }
 
         return true;
     }
 
     void onButtonClick(CCObject *sender) {
-        auto songWidget = this->m_songWidget;
+        auto songWidget = m_fields->songWidget;
+        auto songID = m_fields->songWidget->m_customSongID;
 
         try {
             // copy the song ID to the clipboard
-            clipboard::write(std::to_string(songWidget->m_customSongID));
-            Notification::create(std::string("ID ") + std::to_string(songWidget->m_customSongID) + std::string(" successfully copied"), CCSprite::createWithSpriteFrameName("GJ_completesIcon_001.png"))->show();
+            clipboard::write(std::to_string(songID));
+            Notification::create(std::string("ID ") + std::to_string(songID) + std::string(" successfully copied"), CCSprite::createWithSpriteFrameName("GJ_completesIcon_001.png"))->show();
         } catch (const std::exception &e) {
             Notification::create(std::string("Failed to copy ID"), CCSprite::createWithSpriteFrameName("GJ_deleteIcon_001.png"))->show();
         }
