@@ -4,7 +4,7 @@
 
 # Notes
 
-- This mod interferes with the `Jukebox` mod, i can't do anything to fix it sadly :sob:
+- This mod interferes with the `Jukebox` mod, ~~i can't do anything to fix it sadly :sob:~~ i will try to fix it soon... :)
 
 # Credits
 
