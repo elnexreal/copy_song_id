@@ -1,7 +1,7 @@
 {
 	"geode": "2.0.0",
 	"gd": "2.204",
-	"version": "v1.2.3",
+	"version": "v1.2.4",
 	"id": "elnexreal.copy_song_id",
 	"name": "Copy Song ID",
 	"developer": "elnexreal",
@@ -9,7 +9,7 @@
 	"repository": "https://github.com/elnexreal/copy_song_id",
 	"tags": [
 		"Utility",
-		"Song"
+		"Music"
 	],
 	"incompatibilities": [
 		{
