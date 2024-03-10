@@ -1,3 +1,7 @@
+# v1.3.0
+
+- Added Jukebox support `(doesn't work with custom songs... can't be fixed)`
+
 # v1.2.4
 
 - Updated `about.md`.
