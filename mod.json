@@ -1,7 +1,7 @@
 {
 	"geode": "2.0.0",
 	"gd": "2.204",
-	"version": "v1.2.4",
+	"version": "v1.3.0",
 	"id": "elnexreal.copy_song_id",
 	"name": "Copy Song ID",
 	"developer": "elnexreal",
@@ -10,12 +10,5 @@
 	"tags": [
 		"Utility",
 		"Music"
-	],
-	"incompatibilities": [
-		{
-			"id": "fleym.nongd",
-			"importance": "breaking",
-			"version": "*"
-		}
 	]
 }
